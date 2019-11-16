@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class MonanAdapter extends RecyclerView.Adapter<MonanAdapter.MonanViewHolder> {
 
     private ArrayList<Monan> monanArrayList;
+    private OnListener onListener;
 
     public MonanAdapter(ArrayList<Monan> monanArrayList) {
         this.monanArrayList = monanArrayList;
@@ -29,11 +30,25 @@ public class MonanAdapter extends RecyclerView.Adapter<MonanAdapter.MonanViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MonanViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MonanViewHolder holder, final int position) {
         Monan monan = monanArrayList.get(position);
         holder.img.setImageResource(monan.getHinhanh());
         holder.txtTen.setText(monan.getTen());
         holder.txtMota.setText(monan.getMota());
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onListener.onItemLongClick(v , position);
+                return true;
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onListener.onItemClick(v , position);
+            }
+        });
     }
 
     @Override
@@ -50,5 +65,9 @@ public class MonanAdapter extends RecyclerView.Adapter<MonanAdapter.MonanViewHol
             txtTen = itemView.findViewById(R.id.textviewTen);
             txtMota = itemView.findViewById(R.id.textviewMota);
         }
+    }
+
+    public void setOnItemListener(OnListener onItemListener){
+        this.onListener = onItemListener;
     }
 }

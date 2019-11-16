@@ -1,27 +1,35 @@
 package com.example.recyclerview08102019;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     MonanAdapter monanAdapter;
     ArrayList<Monan> monanArrayList;
-
+    AlertDialog.Builder builder;
+    String[] arrayName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recyclerview);
+        builder =  new AlertDialog.Builder(MainActivity.this);
 
         monanArrayList = new ArrayList<>();
 
@@ -35,7 +43,32 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(monanAdapter);
+        ((MonanAdapter) Objects.requireNonNull(recyclerView.getAdapter())).setOnItemListener(new OnListener() {
+            @Override
+            public boolean onItemLongClick(View v, int position) {
+                arrayName = monanArrayList.get(position).getTen().split(" - ");
+                builder.setTitle("Bạn muốn xóa " + arrayName[0] + " không ?");
+                builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                });
+                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+                return true;
+            }
+
+            @Override
+            public void onItemClick(View v, int position) {
+                Toast.makeText(MainActivity.this, monanArrayList.get(position).getTen(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }
